@@ -1,0 +1,478 @@
+Sub GetInitials(OfficeInitials)
+Set objWord = CreateObject("Word.Application")
+OfficeInitials = objWord.UserInitials
+objWord.Quit
+End Sub
+Sub MatchHeight()
+Dim h As Double
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+h = ActiveWindow.Selection.ShapeRange(1).Height
+For Each a In ActiveWindow.Selection.ShapeRange
+a.Height = h
+Next a
+End If
+End Sub
+Sub MatchWidth()
+Dim w As Double
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+w = ActiveWindow.Selection.ShapeRange(1).Width
+For Each a In ActiveWindow.Selection.ShapeRange
+a.Width = w
+Next a
+End If
+End Sub
+Sub SwitchPlaces()
+If ActiveWindow.Selection.ShapeRange.Count = 2 Then
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+With ActiveWindow.Selection.ShapeRange(1)
+w1 = .Width
+l1 = .Left
+h1 = .Height
+t1 = .Top
+End With
+With ActiveWindow.Selection.ShapeRange(2)
+w2 = .Width
+l2 = .Left
+h2 = .Height
+t2 = .Top
+End With
+ActiveWindow.Selection.ShapeRange(1).Left = l2 + w2 / 2 - w1 / 2
+ActiveWindow.Selection.ShapeRange(1).Top = t2 + h2 / 2 - h1 / 2
+ActiveWindow.Selection.ShapeRange(2).Left = l1 + w1 / 2 - w2 / 2
+ActiveWindow.Selection.ShapeRange(2).Top = t1 + h1 / 2 - h2 / 2
+End If
+End If
+End Sub
+Sub CentreHorizontal()
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+    With ActiveWindow.Selection.ShapeRange(1)
+        w = .Width
+        L = .Left
+    End With
+    CentrelineLeft = L + w / 2
+For Each a In ActiveWindow.Selection.ShapeRange
+a.Left = CentrelineLeft - a.Width / 2
+Next a
+End If
+End Sub
+Sub CentreVertical()
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+    With ActiveWindow.Selection.ShapeRange(1)
+        h = .Height
+        t = .Top
+    End With
+    CentrelineTop = t + h / 2
+For Each a In ActiveWindow.Selection.ShapeRange
+a.Top = CentrelineTop - a.Height / 2
+Next a
+End If
+End Sub
+Sub StackVertically()
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+EndPoint = ActiveWindow.Selection.ShapeRange(1).Top
+For Each a In ActiveWindow.Selection.ShapeRange
+a.Top = EndPoint
+EndPoint = a.Top + a.Height
+Next
+End If
+End Sub
+Sub StackHorizontally()
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+EndPoint = ActiveWindow.Selection.ShapeRange(1).Left
+For Each a In ActiveWindow.Selection.ShapeRange
+a.Left = EndPoint
+EndPoint = a.Left + a.Width
+Next
+End If
+End Sub
+Sub BorderCycle()
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+    With ActiveWindow.Selection.ShapeRange(1).TextFrame2
+        If .MarginLeft = 0.25 / 0.0352777778 And .MarginRight = 0.25 / 0.0352777778 And .MarginTop = 0.25 / 0.0352777778 And .MarginBottom = 0.25 / 0.0352777778 Then
+            For Each Shape1 In ActiveWindow.Selection.ShapeRange
+                With Shape1.TextFrame2
+                    .MarginLeft = 0.25 / 0.0352777778
+                    .MarginRight = 0.25 / 0.0352777778
+                    .MarginBottom = 0.1 / 0.0352777778
+                    .MarginTop = 0.1 / 0.0352777778
+                End With
+            Next Shape1
+        ElseIf .MarginLeft = 0.25 / 0.0352777778 And .MarginRight = 0.25 / 0.0352777778 And .MarginTop = 0.1 / 0.0352777778 And .MarginBottom = 0.1 / 0.0352777778 Then
+            For Each Shape1 In ActiveWindow.Selection.ShapeRange
+                With Shape1.TextFrame2
+                    .MarginLeft = 0.1 / 0.0352777778
+                    .MarginRight = 0.1 / 0.0352777778
+                    .MarginBottom = 0.1 / 0.0352777778
+                    .MarginTop = 0.1 / 0.0352777778
+                End With
+            Next Shape1
+        ElseIf .MarginLeft = 0.1 / 0.0352777778 And .MarginRight = 0.1 / 0.0352777778 And .MarginTop = 0.1 / 0.0352777778 And .MarginBottom = 0.1 / 0.0352777778 Then
+            For Each Shape1 In ActiveWindow.Selection.ShapeRange
+                With Shape1.TextFrame2
+                    .MarginLeft = 0
+                    .MarginRight = 0
+                    .MarginBottom = 0
+                    .MarginTop = 0
+                End With
+            Next Shape1
+        Else
+            For Each Shape1 In ActiveWindow.Selection.ShapeRange
+                With Shape1.TextFrame2
+                    .MarginLeft = 0.25 / 0.0352777778
+                    .MarginRight = 0.25 / 0.0352777778
+                    .MarginBottom = 0.25 / 0.0352777778
+                    .MarginTop = 0.25 / 0.0352777778
+                End With
+            Next Shape1
+        End If
+    End With
+End If
+End Sub
+Sub AddSticky()
+Dim MySlide As Slide
+Set MySlide = Application.ActiveWindow.View.Slide
+Set NewTextBox = MySlide.Shapes.AddTextbox(msoTextOrientationHorizontal, 100, 100, 200, 100)
+'GetInitials Initials
+Initials = "HB"
+With NewTextBox
+.Fill.ForeColor.RGB = RGB(255, 255, 0)
+.Line.Style = msoLineSingle
+       
+    With .TextFrame
+    .AutoSize = ppAutoSizeShapeToFitText
+    .VerticalAnchor = msoAnchorTop
+        With .TextRange.Font
+        .Size = 12
+        .Bold = msoTrue
+        .Italic = msoFalse
+        End With
+        
+        With .TextRange
+        .Paragraphs.ParagraphFormat.Alignment = ppAlignLeft
+        .Text = Initials & " " & Date & ":" & Chr(11) & Chr(11)
+        End With
+    
+        .MarginLeft = 0.2 / 0.0352777778
+        .MarginRight = 0.2 / 0.0352777778
+        .MarginBottom = 0.1 / 0.0352777778
+        .MarginTop = 0.1 / 0.0352777778
+    End With
+    With .Shadow
+    '.ForeColor.RGB = RGB(0, 0, 0)
+    '.Type = msoShadow2
+    .Blur = 0
+    .Transparency = 0
+    .Size = 100
+    .OffsetX = 3 / (2 ^ 0.5)
+    .OffsetY = 3 / (2 ^ 0.5)
+    .Visible = msoTrue
+    End With
+End With
+End Sub
+Sub TextBox(x)
+Dim MySlide As Slide
+Set MySlide = Application.ActiveWindow.View.Slide
+L = (1.53 + x * 12.85) / 0.0352777778 * (ActivePresentation.PageSetup.SlideWidth / 780)
+t = 5.82 / 0.0352777778 * (ActivePresentation.PageSetup.SlideHeight / 540)
+w = 11.6 / 0.0352777778 * (ActivePresentation.PageSetup.SlideWidth / 780)
+h = 10.5 / 0.0352777778 * (ActivePresentation.PageSetup.SlideHeight / 540)
+Set NewTextBox = MySlide.Shapes.AddTextbox(msoTextOrientationHorizontal, L, t, w, h)
+With NewTextBox
+    With .TextFrame
+        .AutoSize = ppAutoSizeNone
+        .VerticalAnchor = msoAnchorTop
+        With .TextRange
+            .Text = "Body Text 1" & vbNewLine & "Body Text 2" & vbNewLine & "Body Text 3"
+            .Paragraphs.ParagraphFormat.Alignment = ppAlignLeft
+            .Font.Size = 12
+            With .Paragraphs(1)
+                .Font.Bold = msoTrue
+            End With
+            With .Lines(2)
+                .Font.Bold = False
+                .IndentLevel = 2
+                With .ParagraphFormat.Bullet
+                    .Type = ppBulletUnnumbered
+                    .Font.Color = RGB(255, 0, 0)
+                End With
+            End With
+            With .Lines(3)
+                .Font.Bold = False
+                .IndentLevel = 3
+                With .ParagraphFormat.Bullet
+                    .Type = ppBulletUnnumbered
+                    .Character = 8210
+                    .Font.Color = RGB(255, 0, 0)
+                End With
+            End With
+        End With
+        With .Ruler
+            For i = 1 To 5
+                .Levels(i).FirstMargin = 0
+                .Levels(i).LeftMargin = 0
+            Next i
+        End With
+        .Ruler.Levels(2).FirstMargin = 11.4
+        .Ruler.Levels(2).LeftMargin = 22.8
+        .Ruler.Levels(3).FirstMargin = 22.8
+        .Ruler.Levels(3).LeftMargin = 34.1
+    End With
+End With
+End Sub
+Sub Header(x)
+Dim MySlide As Slide
+Set MySlide = Application.ActiveWindow.View.Slide
+L = (1.53 + x * 12.85) * (ActivePresentation.PageSetup.SlideWidth / 780) / 0.0352777778
+t = 3.96 / 0.0352777778 * (ActivePresentation.PageSetup.SlideHeight / 540)
+w = 11.6 / 0.0352777778 * (ActivePresentation.PageSetup.SlideWidth / 780)
+h = 1.5 / 0.0352777778 * (ActivePresentation.PageSetup.SlideHeight / 540)
+Set NewTextBox = MySlide.Shapes.AddTextbox(msoTextOrientationHorizontal, L, t, w, h)
+With NewTextBox
+    .Fill.ForeColor.RGB = RGB(255, 255, 255)
+    With .TextFrame
+    .AutoSize = ppAutoSizeNone
+    .VerticalAnchor = msoAnchorBottom
+    .MarginBottom = 0.2 / 0.0352777778
+        With .TextRange
+            .Paragraphs.ParagraphFormat.Alignment = ppAlignCenter
+            .Text = "Header"
+            With .Font
+                .Size = 14
+                .Bold = msoTrue
+                .Italic = msoFalse
+            End With
+        End With
+    End With
+    With .Shadow
+        .Blur = 0
+        .Transparency = 0
+        .Size = 100
+        .OffsetX = 0
+        .OffsetY = 2
+        .Visible = msoTrue
+        .ForeColor.RGB = RGB(255, 0, 0)
+    End With
+End With
+End Sub
+Sub InsertTitleBox()
+Dim MySlide As Slide
+Set MySlide = Application.ActiveWindow.View.Slide
+L = (1.53 + 0 * 12.85) / 0.0352777778
+t = 3.89 / 0.0352777778
+w = 4.29 / 0.0352777778
+h = 2.8 / 0.0352777778
+Set NewTextBox = MySlide.Shapes.AddTextbox(msoTextOrientationHorizontal, L, t, w, h)
+With NewTextBox
+    .Fill.ForeColor.RGB = RGB(255, 0, 0)
+    With .Line
+        .Visible = True
+        .ForeColor.RGB = RGB(255, 0, 0)
+        .Weight = 0.75
+    End With
+    With .TextFrame
+    .AutoSize = ppAutoSizeNone
+    .VerticalAnchor = msoAnchorMiddle
+        With .TextRange
+            .Paragraphs.ParagraphFormat.Alignment = ppAlignCenter
+            .Text = "Title"
+            With .Font
+                .Size = 14
+                .Bold = msoTrue
+                .Italic = msoFalse
+                .Color.RGB = RGB(255, 255, 255)
+            End With
+        End With
+    End With
+End With
+End Sub
+Sub InsertStandardTextBox()
+Call TextBox(0)
+End Sub
+Sub InsertHeader()
+Call Header(0)
+End Sub
+Sub InsertTwoColumns()
+For x = 0 To 1
+    Call Header(x)
+    Call TextBox(x)
+Next x
+End Sub
+Sub ChevronNoseMatcher()
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+    With ActiveWindow.Selection.ShapeRange(1)
+        If .AutoShapeType = msoShapePentagon Or .AutoShapeType = msoShapeChevron Then
+            NoseAdj = .Adjustments(1)
+            If .Width > .Height Then
+                NoseAngle = NoseAdj
+            Else
+                NoseAngle = NoseAdj * .Width / .Height
+            End If
+        End If
+    End With
+    For Each sh In ActiveWindow.Selection.ShapeRange
+        If sh.AutoShapeType = msoShapePentagon Or sh.AutoShapeType = msoShapeChevron Then
+            If sh.Width > sh.Height Then
+                sh.Adjustments(1) = NoseAngle
+            Else
+                sh.Adjustments(1) = NoseAngle * sh.Height / sh.Width
+            End If
+        End If
+    Next sh
+End If
+End Sub
+Sub NewHanddrawnCircle()
+Dim MySlide As Slide
+Set MySlide = Application.ActiveWindow.View.Slide
+With MySlide.Shapes.BuildFreeform(msoEditingCorner, 361.31638, 260.62473)
+.AddNodes msoSegmentCurve, msoEditingCorner, 384.97779, 266.22488, 415.76441, 266.54126, 438.01614, 263.85197
+.AddNodes msoSegmentCurve, msoEditingCorner, 469.0695, 260.24512, 494.7122, 255.75229, 495.1694, 246.0074
+.AddNodes msoSegmentCurve, msoEditingCorner, 495.6267, 236.2626, 468.6503, 224.492756, 424.10882, 222.372913
+.AddNodes msoSegmentCurve, msoEditingCorner, 374.5759, 220.03165354, 352.819528, 235.88291, 352.819528, 240.9452
+.AddNodes msoSegmentCurve, msoEditingCorner, 352.819528, 246.0074, 365.01228, 250.69008, 379.7578, 251.95559
+.AddNodes msoSegmentCurve, msoEditingCorner, 360.66858, 253.9489, 350, 246.89331, 350, 240.9452
+.AddNodes msoSegmentCurve, msoEditingCorner, 350, 234.99701, 368.02236, 218.038346, 424.3374, 220.1898425
+.AddNodes msoSegmentCurve, msoEditingCorner, 459.0866, 221.518661, 497.989, 231.73819, 497.7604, 246.0074
+.AddNodes msoSegmentCurve, msoEditingCorner, 497.5318, 260.27669, 459.4676, 263.78866, 436.72063, 266.22488
+.AddNodes msoSegmentCurve, msoEditingCorner, 413.97362, 268.6611, 371.07055, 268.02835, 361.31638, 260.62473
+Set NewHandCircle = .ConvertToShape
+End With
+NewHandCircle.Line.Weight = 0.75
+NewHandCircle.Line.ForeColor.RGB = RGB(255, 0, 0)
+NewHandCircle.Fill.ForeColor.RGB = RGB(255, 0, 0)
+End Sub
+Sub TextLevelRotate()
+Dim MySlide As Slide
+Set MySlide = Application.ActiveWindow.View.Slide
+If ActiveWindow.Selection.Type = ppSelectionText Then
+    With ActiveWindow.Selection.TextRange
+        If .IndentLevel = 1 Then
+            .Font.Bold = False
+            .IndentLevel = 2
+           With .ParagraphFormat.Bullet
+                .Type = ppBulletUnnumbered
+                .Font.Color = RGB(255, 0, 0)
+            End With
+        ElseIf .IndentLevel = 3 Then
+            .IndentLevel = 1
+            .Font.Bold = msoTrue
+            .ParagraphFormat.Bullet.Type = ppBulletNone
+        ElseIf .IndentLevel = 2 Then
+            .Font.Bold = False
+            .IndentLevel = 3
+            With .ParagraphFormat.Bullet
+                .Type = ppBulletUnnumbered
+                .Character = 8210
+                .Font.Color = RGB(255, 0, 0)
+            End With
+        End If
+    End With
+'Finally reset the margin indent levels
+    With ActiveWindow.Selection.ShapeRange(1).TextFrame.Ruler
+        For i = 1 To 5
+            .Levels(i).FirstMargin = 0
+            .Levels(i).LeftMargin = 0
+        Next i
+        .Levels(2).FirstMargin = 0.4 * 28.35
+        .Levels(2).LeftMargin = 0.8 * 28.35
+        .Levels(3).FirstMargin = 0.8 * 28.35
+        .Levels(3).LeftMargin = 1.2 * 28.35
+    End With
+End If
+End Sub
+Sub BulletTighten()
+If ActiveWindow.Selection.Type = ppSelectionText Then
+    With ActiveWindow.Selection.ShapeRange(1).TextFrame.Ruler
+        .Levels(1).FirstMargin = 0
+        .Levels(1).LeftMargin = 0
+        If .Levels(2).FirstMargin = 0.4 * 28.35 Then
+            .Levels(2).FirstMargin = 0.1 * 28.35
+            .Levels(2).LeftMargin = 0.4 * 28.35
+            .Levels(3).FirstMargin = 0.3 * 28.35
+            .Levels(3).LeftMargin = 0.6 * 28.35
+        Else
+            .Levels(2).FirstMargin = 0.4 * 28.35
+            .Levels(2).LeftMargin = 0.8 * 28.35
+            .Levels(3).FirstMargin = 0.8 * 28.35
+            .Levels(3).LeftMargin = 1.2 * 28.35
+        End If
+    
+    End With
+End If
+End Sub
+Sub SelectSimilarShapes()
+Dim MySlide As Slide
+Set MySlide = Application.ActiveWindow.View.Slide
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+    With ActiveWindow.Selection.ShapeRange(1)
+        SelectedShapeType = .AutoShapeType
+        SelectedFillColor = .Fill.ForeColor
+        SelectedWidth = .Width
+        SelectedHeight = .Height
+        For Each Othershape In MySlide.Shapes
+            If Othershape.AutoShapeType = SelectedShapeType And Othershape.Fill.ForeColor = SelectedFillColor And Othershape.Width = SelectedWidth And Othershape.Height = SelectedHeight Then
+                Othershape.Select Replace:=False
+            End If
+        Next Othershape
+    End With
+End If
+End Sub
+Sub FindNextSticky()
+On Error Resume Next
+Dim MySlide As Slide
+Dim ThisSlide As Slide
+Set MySlide = Application.ActiveWindow.View.Slide
+a = MySlide.SlideIndex
+i = 1
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+    ThisName = ActiveWindow.Selection.ShapeRange(1).Name
+    For Each ShapeX In MySlide.Shapes
+        If ShapeX.Name = ThisName Then b = i
+        i = i + 1
+    Next ShapeX
+End If
+For SlideOffset = 1 To ActivePresentation.Slides.Count
+Set ThisSlide = ActivePresentation.Slides((a - 2 + SlideOffset) Mod ActivePresentation.Slides.Count + 1)
+    If b = ThisSlide.Shapes.Count Then
+        b = 0
+    Else
+        For ShapeIndex = b + 1 To ThisSlide.Shapes.Count
+            With ThisSlide.Shapes(ShapeIndex)
+                    ThisSlide.Select
+'                    .Select
+'                MsgBox .Name & "; Slide number " & ThisSlide.SlideNumber
+                
+                If .Fill.ForeColor.RGB = RGB(255, 255, 0) And .Shadow.Size = 100 And .Shadow.Visible = msoTrue Then
+                    .Select
+                    Exit Sub
+                End If
+            End With
+        Next ShapeIndex
+    End If
+    b = 0
+Next SlideOffset
+End Sub
+Sub MultipleLayout()
+leftedge = ActivePresentation.PageSetup.SlideWidth
+rightedge = 0
+i = 0
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+    n = ActiveWindow.Selection.ShapeRange.Count
+    If n > 1 Then
+        For Each shp In ActiveWindow.Selection.ShapeRange
+            If shp.Left < leftedge Then leftedge = shp.Left
+            If (shp.Left + shp.Width) > rightedge Then rightedge = (shp.Left + shp.Width)
+        Next shp
+        'MsgBox leftedge * 0.0352777778
+        'MsgBox rightedge * 0.0352777778
+        Wtot = rightedge - leftedge
+        r = 0.105
+        newwidth = Wtot / (n + r * n - r)
+        newgapwidth = r * newwidth
+        For Each shp In ActiveWindow.Selection.ShapeRange
+        shp.Width = newwidth
+        shp.Left = leftedge + i * (newgapwidth + newwidth)
+        i = i + 1
+        Next shp
+    End If
+End If
+End Sub
