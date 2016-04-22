@@ -1,0 +1,118 @@
+
+Private Sub CancelButton_Click()
+proceedswitch = False
+Unload InputParametersForm
+End Sub
+
+Private Sub OKButton_Click()
+proceedswitch = True
+r1 = r1TextBox.Value
+r2 = r2TextBox.Value
+n = nTextBox.Value
+t = tTextBox.Value
+SpaceDim = SpaceDimTextBox.Value
+Unload InputParametersForm
+End Sub
+
+Private Sub UserForm_Initialize()
+r1ScrollBar.Value = 80
+r1TextBox.Value = r1ScrollBar.Value
+r2ScrollBar.Value = 200
+r2TextBox.Value = r2ScrollBar.Value
+nScrollBar.Value = 4
+nTextBox.Value = nScrollBar.Value
+tScrollBar.Value = 10
+tTextBox.Value = tScrollBar.Value
+SpaceDimScrollBar = 10
+SpaceDimTextBox.Value = SpaceDimScrollBar.Value
+
+r1min.Caption = r1ScrollBar.Min
+r1max.Caption = r1ScrollBar.Max
+r2min.Caption = r2ScrollBar.Min
+r2max.Caption = r2ScrollBar.Max
+nmin.Caption = nScrollBar.Min
+nmax.Caption = nScrollBar.Max
+tmin.Caption = tScrollBar.Min
+tmax.Caption = tScrollBar.Max
+SpaceDimmin.Caption = SpaceDimScrollBar.Min
+SpaceDimmax.Caption = SpaceDimScrollBar.Max
+
+End Sub
+Private Sub r1ScrollBar_Change()
+r1TextBox.Value = r1ScrollBar.Value
+r2ScrollBar.Min = r1ScrollBar.Value
+r2min.Caption = r2ScrollBar.Min
+End Sub
+Private Sub r1TextBox_Change()
+If r1TextBox.Value > r1ScrollBar.Max Then
+MsgBox "Please input a number between " & r1ScrollBar.Min & " and " & r1ScrollBar.Max
+r1ScrollBar.Value = r1ScrollBar.Max
+ElseIf r1TextBox.Value < r1ScrollBar.Min Then
+MsgBox "Please input a number between " & r1ScrollBar.Min & " and " & r1ScrollBar.Max
+r1ScrollBar.Value = r1ScrollBar.Min
+Else
+r1ScrollBar.Value = r1TextBox.Value
+End If
+r2ScrollBar.Min = r1ScrollBar.Value
+r2min.Caption = r2ScrollBar.Min
+End Sub
+Private Sub r2ScrollBar_Change()
+r2TextBox.Value = r2ScrollBar.Value
+r1ScrollBar.Max = r2ScrollBar.Value
+r1max.Caption = r1ScrollBar.Max
+End Sub
+Private Sub r2TextBox_Change()
+If r2TextBox.Value > r2ScrollBar.Max Then
+MsgBox "Please input a number between " & r2ScrollBar.Min & " and " & r2ScrollBar.Max
+r2ScrollBar.Value = r2ScrollBar.Max
+ElseIf r2TextBox.Value < r2ScrollBar.Min Then
+MsgBox "Please input a number between " & r2ScrollBar.Min & " and " & r2ScrollBar.Max
+r2ScrollBar.Value = r2ScrollBar.Min
+Else
+r2ScrollBar.Value = r2TextBox.Value
+End If
+r1ScrollBar.Max = r2ScrollBar.Value
+r1max.Caption = r1ScrollBar.Max
+End Sub
+Private Sub nScrollBar_Change()
+nTextBox.Value = nScrollBar.Value
+End Sub
+Private Sub nTextBox_Change()
+If nTextBox.Value > nScrollBar.Max Then
+MsgBox "Please input a number between " & nScrollBar.Min & " and " & nScrollBar.Max
+nScrollBar.Value = nScrollBar.Max
+ElseIf nTextBox.Value < nScrollBar.Min Then
+MsgBox "Please input a number between " & nScrollBar.Min & " and " & nScrollBar.Max
+nScrollBar.Value = nScrollBar.Min
+Else
+nScrollBar.Value = nTextBox.Value
+End If
+End Sub
+Private Sub tScrollBar_Change()
+tTextBox.Value = tScrollBar.Value
+End Sub
+Private Sub tTextBox_Change()
+If tTextBox.Value > tScrollBar.Max Then
+MsgBox "Please input a number between " & tScrollBar.Min & " and " & tScrollBar.Max
+tScrollBar.Value = tScrollBar.Max
+ElseIf tTextBox.Value < tScrollBar.Min Then
+MsgBox "Please input a number between " & tScrollBar.Min & " and " & tScrollBar.Max
+tScrollBar.Value = tScrollBar.Min
+Else
+tScrollBar.Value = tTextBox.Value
+End If
+End Sub
+Private Sub SpaceDimScrollBar_Change()
+SpaceDimTextBox.Value = SpaceDimScrollBar.Value
+End Sub
+Private Sub SpaceDimTextBox_Change()
+If SpaceDimTextBox.Value > SpaceDimScrollBar.Max Then
+MsgBox "Please input a number between " & SpaceDimScrollBar.Min & " and " & SpaceDimScrollBar.Max
+SpaceDimScrollBar.Value = SpaceDimScrollBar.Max
+ElseIf SpaceDimTextBox.Value < SpaceDimScrollBar.Min Then
+MsgBox "Please input a number between " & SpaceDimScrollBar.Min & " and " & SpaceDimScrollBar.Max
+SpaceDimScrollBar.Value = SpaceDimScrollBar.Min
+Else
+SpaceDimScrollBar.Value = SpaceDimTextBox.Value
+End If
+End Sub
