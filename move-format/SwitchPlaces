@@ -1,0 +1,22 @@
+Sub SwitchPlaces()
+If ActiveWindow.Selection.ShapeRange.Count = 2 Then
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+With ActiveWindow.Selection.ShapeRange(1)
+w1 = .Width
+l1 = .Left
+h1 = .Height
+t1 = .Top
+End With
+With ActiveWindow.Selection.ShapeRange(2)
+w2 = .Width
+l2 = .Left
+h2 = .Height
+t2 = .Top
+End With
+ActiveWindow.Selection.ShapeRange(1).Left = l2 + w2 / 2 - w1 / 2
+ActiveWindow.Selection.ShapeRange(1).Top = t2 + h2 / 2 - h1 / 2
+ActiveWindow.Selection.ShapeRange(2).Left = l1 + w1 / 2 - w2 / 2
+ActiveWindow.Selection.ShapeRange(2).Top = t1 + h1 / 2 - h2 / 2
+End If
+End If
+End Sub
