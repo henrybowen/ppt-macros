@@ -1,0 +1,9 @@
+Sub MatchWidth()
+Dim w As Double
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+w = ActiveWindow.Selection.ShapeRange(1).Width
+For Each a In ActiveWindow.Selection.ShapeRange
+a.Width = w
+Next a
+End If
+End Sub
