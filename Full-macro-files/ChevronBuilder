@@ -1,0 +1,74 @@
+Public proceedswitch As Boolean
+Public r1 As Double
+Public r2 As Double
+Public n As Integer
+Public t As Double
+Public SpaceDim As Double
+
+Sub NewChevronBuilder()
+InputParametersForm.Show
+If proceedswitch Then
+Dim MySlide As Slide
+Dim NewerShape As Shape
+'Dim r1, r2, n, t, x, y As Double
+
+'Input Parameters
+'r1 = 80 'inner radius
+'r2 = 200 'outer radius
+'n = 6 'number of arrows in complete circle
+'t = 15 'displacement of arrowhead from horizontal in points
+'SpaceDim = 7 'gap distance between chevrons
+
+'Calculated variables
+x = ActivePresentation.PageSetup.SlideWidth / 2 'Centre of slide
+y = ActivePresentation.PageSetup.SlideHeight / 2 'Centre of slide
+pi = 4 * Atn(1) 'Pi
+Theta = pi * 2 / n 'Sector angle of one chevron
+Psi = Atn((2 * t) / (r1 + r2)) 'Angle of displacement of trailing arrowhead
+d = Sqr((t ^ 2) + ((r1 + r2) ^ 2 / 4)) 'Distance from origin of trailing arrowhead
+'f is the Bezier control point location as per https://pomax.github.io/bezierinfo/#pointcurves
+f1 = r1 * 4 / 3 * Tan(Theta / 4) 'Inner curve
+f2 = r2 * 4 / 3 * Tan(Theta / 4) 'Outer curve
+
+Set MySlide = Application.ActiveWindow.View.Slide
+
+With MySlide.Shapes.BuildFreeform(msoEditingCorner, 0, r1) 'Node 1
+    .AddNodes msoSegmentLine, msoEditingCorner, -t, (r1 + r2) / 2 'Node 2
+    .AddNodes msoSegmentLine, msoEditingCorner, 0, r2 'Node 3
+    .AddNodes msoSegmentCurve, msoEditingCorner, f2, r2, r2 * Sin(Theta) - f2 * Cos(Theta), _
+    r2 * Cos(Theta) + f2 * Sin(Theta), r2 * Sin(Theta), r2 * Cos(Theta) 'Node 4, including Bezier control points
+    .AddNodes msoSegmentLine, msoEditingCorner, d * Sin(Theta - Psi), d * Cos(Theta - Psi) 'Node 5, including trailing arrowhead points
+    .AddNodes msoSegmentLine, msoEditingCorner, r1 * Sin(Theta), r1 * Cos(Theta) 'Node 6
+    .AddNodes msoSegmentCurve, msoEditingCorner, r1 * Sin(Theta) - f1 * Cos(Theta), _
+    r1 * Cos(Theta) + f1 * Sin(Theta), f1, r1, 0, r1 'Node 1, including Bezier control points
+    
+Set NewShape = .ConvertToShape
+End With
+
+Cx = NewShape.Left + NewShape.Width / 2
+Cy = NewShape.Top + NewShape.Height / 2
+'SpaceDim separates the shapes from each other, allowing a gap between the arrows
+NewShape.IncrementLeft (x + SpaceDim * Sin(Theta / 2))
+NewShape.IncrementTop (y + SpaceDim * Cos(Theta / 2))
+'Polar array around (x, y)
+'Cx = (r2 * Sin(Theta) - t) / 2
+'Cy = r2 / 2 + r1 * Cos(Theta) / 2
+
+For i = 1 To n - 1
+    With NewShape.Duplicate
+'    MySlide.Shapes.AddLine 0, 0, Cx, Cy
+    Cxnew = Cx * Cos(Theta) - Cy * Sin(Theta)
+    Cynew = Cx * Sin(Theta) + Cy * Cos(Theta)
+    'MySlide.Shapes.AddLine 0, 0, Cxnew, Cynew
+
+    .Left = x + Cxnew - .Width / 2 + SpaceDim * Sin(Theta * (1 / 2 - i))
+    .Top = y + Cynew - .Height / 2 + SpaceDim * Cos(Theta * (1 / 2 - i))
+    .IncrementRotation (360 / n * i)
+
+    Cx = Cxnew
+    Cy = Cynew
+  
+    End With
+Next i
+End If
+End Sub
