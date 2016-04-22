@@ -1,0 +1,9 @@
+Sub MatchHeight()
+Dim h As Double
+If ActiveWindow.Selection.Type = ppSelectionShapes Then
+h = ActiveWindow.Selection.ShapeRange(1).Height
+For Each a In ActiveWindow.Selection.ShapeRange
+a.Height = h
+Next a
+End If
+End Sub
